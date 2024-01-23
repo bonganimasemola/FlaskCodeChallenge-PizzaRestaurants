@@ -4,7 +4,7 @@ import os
 from flask import Flask, make_response, jsonify, request, render_template
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, Restaurant, Pizza, RestaurantPizza  # Import RestaurantPizza
+from models import db, Restaurant, Pizza, RestaurantPizza  
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
