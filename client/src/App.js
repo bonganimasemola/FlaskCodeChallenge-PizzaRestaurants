@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import './App.css';
+
+import PizzaList from "./components/PizzaList";
+import RestaurantList from "./components/RestaurantList";
+import RestaurantDetails from "./components/RestaurantDetails";
+import RestaurantPizzasList from "./components/RestaurantPizzasList"; 
 
 function App() {
   const [data, setData] = useState({ restaurants: [], pizzas: [] });
 
   useEffect(() => {
-   
     Promise.all([
       fetch("http://127.0.0.1:5559/pizzas").then((r) => r.json()),
       fetch("http://127.0.0.1:5559/restaurants").then((r) => r.json())
@@ -17,35 +22,29 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <h1>Pizza time!</h1>
-      <p>Nibble on New York's tastiest pizza!</p>
+    <Router>
+      <div className="App">
+        <h1>Pizza time!</h1>
+        <p>Nibble on New York's tastiest pizza!</p>
 
-      {(data.restaurants && data.restaurants.length === 0) ? (
-        <p>Loading...</p>
-      ) : (
-        data.restaurants.map((restaurant, i) => (
-          <div key={i}>
-            <h2>{restaurant.name}</h2>
-            <p>{restaurant.address}</p>
-          </div>
-        ))
-      )}
+        <Link to="/pizzas">Pizzas</Link>
+        <Link to="/restaurants">Restaurants</Link>
+        <Link to="/restaurant_pizzas">Restaurant Pizzas</Link>
 
-      <h2>Pizzas:</h2>
-      <ul>
-        {(data.pizzas && data.pizzas.length > 0) ? (
-          data.pizzas.map((pizza) => (
-            <li key={pizza.id}>
-              <strong>{pizza.name}</strong> - {pizza.ingredients}
-            </li>
-          ))
-        ) : (
-          <p>No pizzas available</p>
-        )}
-      </ul>
-    </div>
+        <Routes>
+          <Route path="/pizzas" element={<PizzaList pizzas={data.pizzas} />} />
+          <Route path="/restaurants" element={<RestaurantList restaurants={data.restaurants} />} />
+          <Route path="/restaurants/:id" element={<RestaurantDetails />} />
+          <Route path="/restaurant_pizzas" element={<RestaurantPizzasList />} />
+          <Route path="/" element={<DefaultComponent />} />
+        </Routes>
+      </div>
+    </Router>
   );
+}
+
+function DefaultComponent() {
+  return <p></p>;
 }
 
 export default App;
